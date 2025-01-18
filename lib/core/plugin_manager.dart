@@ -11,10 +11,16 @@ class PluginManager {
 
   /// Register a plugin and initialize it
   void registerPlugin(String pluginKey, PluginBase plugin) {
+    if (_plugins.containsKey(pluginKey)) {
+      throw Exception('Plugin with key "$pluginKey" is already registered.');
+    }
+
     _plugins[pluginKey] = plugin;
     print('Plugin registered: $pluginKey');
-  }
 
+    // Initialize the plugin
+    plugin.initialize();
+  }
 
   /// Deregister a plugin and clean up
   void deregisterPlugin(String pluginKey) {

@@ -27,12 +27,11 @@ class MainPlugin extends PluginBase {
   @override
   void initialize() {
     super.initialize();
-    print('PluginExample initialized.');
+
   }
 
   @override
   void dispose() {
-    print('PluginExample disposed.');
     super.dispose();
   }
 

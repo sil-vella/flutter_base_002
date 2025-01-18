@@ -1,5 +1,5 @@
-import '../../core/hooks_manager.dart';
 import '../../core/module_manager.dart';
+import '../../core/hooks_manager.dart';
 
 abstract class PluginBase {
   final HooksManager hooksManager;
@@ -23,7 +23,9 @@ abstract class PluginBase {
   /// Register modules dynamically from the moduleMap
   void registerModules() {
     moduleMap.forEach((moduleKey, createModule) {
-      moduleManager.registerModule(moduleKey, createModule());
+      final module = createModule();
+      moduleManager.registerModule(moduleKey, module);
+      print('Module registered: $moduleKey'); // Log module registration
     });
   }
 

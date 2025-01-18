@@ -1,4 +1,3 @@
-import 'package:flush_me_im_famous/plugins/main_plugin/modules/navigation_module/navigation_container.dart';
 import 'package:flush_me_im_famous/plugins/main_plugin/screens/home_screen.dart';
 import 'package:flush_me_im_famous/utils/consts/theme_consts.dart';
 import 'package:flush_me_im_famous/utils/consts/config.dart';
@@ -11,7 +10,6 @@ void main() {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AppManager()),
-        ChangeNotifierProvider(create: (context) => NavigationContainer()),
       ],
       child: MyApp(),
     ),
@@ -39,14 +37,11 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    final navigationContainer = Provider.of<NavigationContainer>(context, listen: false);
 
     return MaterialApp(
       title: Config.appTitle,
-      navigatorKey: NavigationContainer.navigatorKey,
       theme: AppTheme.darkTheme,
       home: const HomeScreen(),
-      onGenerateRoute: navigationContainer.generateRoute,
     );
   }
 }

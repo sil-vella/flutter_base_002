@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../main_plugin/modules/navigation_module/navigation_container.dart';
 
 abstract class BaseScreen extends StatefulWidget {
   const BaseScreen({Key? key}) : super(key: key);
@@ -15,7 +14,7 @@ abstract class BaseScreen extends StatefulWidget {
 abstract class BaseScreenState<T extends BaseScreen> extends State<T> {
   @override
   Widget build(BuildContext context) {
-    return Consumer<NavigationContainer>(
+    return Consumer(
       builder: (context, navigationContainer, child) {
 
         return Scaffold(
@@ -23,10 +22,8 @@ abstract class BaseScreenState<T extends BaseScreen> extends State<T> {
             // Dynamically compute the title using the widget's computeTitle method
             title: Text(widget.computeTitle(context)),
             actions: [
-              ...navigationContainer.appBarActions, // Dynamically updated AppBar actions
             ],
           ),
-          drawer: navigationContainer.buildDrawer(context),
           body: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -35,7 +32,6 @@ abstract class BaseScreenState<T extends BaseScreen> extends State<T> {
               ),
             ],
           ),
-          bottomNavigationBar: navigationContainer.buildBottomNavigationBar(),
         );
       },
     );

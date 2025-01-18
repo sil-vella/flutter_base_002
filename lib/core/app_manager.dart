@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'plugin_manager.dart';
 import 'module_manager.dart';
 import 'hooks_manager.dart';
+import 'plugin_registry.dart';
 
 class AppManager extends ChangeNotifier {
   // Overall app state
@@ -15,7 +16,9 @@ class AppManager extends ChangeNotifier {
   AppManager()
       : pluginManager = PluginManager(),
         moduleManager = ModuleManager(),
-        hooksManager = HooksManager();
+        hooksManager = HooksManager() {
+    _initializePlugins();
+  }
 
   /// Getter for app state
   String get appState => _appState;
@@ -31,14 +34,12 @@ class AppManager extends ChangeNotifier {
     hooksManager.triggerHook(hookName);
   }
 
-  /// Access plugin state via PluginManager
-  T? getPluginState<T>(String pluginKey) {
-    return pluginManager.getPluginState<T>(pluginKey);
-  }
+  /// Initialize plugins from PluginRegistry
+  void _initializePlugins() {
+    final plugins = PluginRegistry.getPlugins(pluginManager);
 
-  /// Update plugin state via PluginManager
-  void updatePluginState(String pluginKey, dynamic newState) {
-    pluginManager.updatePluginState(pluginKey, newState);
-    notifyListeners();
+    for (var entry in plugins.entries) {
+      pluginManager.registerPlugin(entry.key, entry.value);
+    }
   }
 }

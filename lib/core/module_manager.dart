@@ -10,11 +10,16 @@ class ModuleManager {
     }
 
     _modules[moduleKey] = module;
+
+    // Log the module registration
+    print('Module registered: $moduleKey');
   }
 
   /// Deregister a module
   void deregisterModule(String moduleKey) {
-    _modules.remove(moduleKey);
+    if (_modules.remove(moduleKey) != null) {
+      print('Module deregistered: $moduleKey');
+    }
   }
 
   /// Get a module
@@ -29,5 +34,17 @@ class ModuleManager {
       return module.callMethod(methodName, args);
     }
     throw Exception('Module or method not found: $moduleKey -> $methodName');
+  }
+
+  /// Log all registered modules
+  void logRegisteredModules() {
+    if (_modules.isEmpty) {
+      print('No modules are currently registered.');
+    } else {
+      print('Registered modules:');
+      _modules.keys.forEach((moduleKey) {
+        print('- $moduleKey');
+      });
+    }
   }
 }
