@@ -1,3 +1,5 @@
+import 'package:flush_me_im_famous/core/navigation_manager.dart';
+
 import '../../core/module_manager.dart';
 import '../../core/hooks_manager.dart';
 
@@ -8,17 +10,8 @@ abstract class PluginBase {
   /// Map for modules
   final Map<String, Function> moduleMap = {};
 
-  /// Map for hooks
-  final Map<String, Function> hookMap = {};
-
   PluginBase(this.hooksManager, this.moduleManager);
 
-  /// Register hooks dynamically from the hookMap
-  void registerHooks() {
-    hookMap.forEach((hookName, callback) {
-      hooksManager.registerHook(hookName, callback());
-    });
-  }
 
   /// Register modules dynamically from the moduleMap
   void registerModules() {
@@ -31,15 +24,11 @@ abstract class PluginBase {
 
   /// Initialize the plugin
   void initialize() {
-    registerHooks();
     registerModules();
   }
 
   /// Dispose the plugin
   void dispose() {
-    // Deregister hooks
-    hookMap.keys.forEach(hooksManager.deregisterHook);
-
     // Deregister modules
     moduleMap.keys.forEach(moduleManager.deregisterModule);
   }

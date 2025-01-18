@@ -4,24 +4,24 @@ import 'package:flush_me_im_famous/utils/consts/config.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'core/app_manager.dart';
+import 'core/hooks_manager.dart';
 import 'core/navigation_manager.dart';
 
 void main() {
-  final navContainer = NavigationContainer();
-
-  navContainer.registerRoute('/', (context) => HomeScreen());
-  navContainer.registerNavItem(DrawerItem(label: 'Home', route: '/', icon: Icons.home));
+  final navigationContainer = NavigationContainer();
+  final hooksManager = HooksManager(); // Single instance of HooksManager
 
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => AppManager()), // Existing AppManager
-        ChangeNotifierProvider(create: (_) => NavigationContainer()), // Updated NavigationContainer
+        ChangeNotifierProvider(create: (_) => AppManager(navigationContainer, hooksManager)),
+        ChangeNotifierProvider.value(value: navigationContainer),
       ],
       child: MyApp(),
     ),
   );
 }
+
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
@@ -35,12 +35,16 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   void initState() {
     super.initState();
 
-    // Trigger the app_startup hook
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final appManager = Provider.of<AppManager>(context, listen: false);
+      print('AppManager accessed in widget tree.');
+
+      // Trigger hooks after AppManager is accessed
       appManager.triggerHook('app_startup');
+      appManager.triggerHook('reg_nav');
     });
   }
+
 
   @override
   Widget build(BuildContext context) {

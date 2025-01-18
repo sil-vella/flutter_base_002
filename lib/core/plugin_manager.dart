@@ -1,26 +1,29 @@
+import 'package:flush_me_im_famous/core/navigation_manager.dart';
+
 import '../plugins/00_base/plugin_base.dart';
 import 'hooks_manager.dart';
 import 'module_manager.dart';
 
 class PluginManager {
-  final HooksManager hooksManager = HooksManager();
+  final HooksManager hooksManager;
   final ModuleManager moduleManager = ModuleManager();
 
   final Map<String, dynamic> _plugins = {};
   final Map<String, dynamic> _pluginStates = {};
 
-  /// Register a plugin and initialize it
+  PluginManager(this.hooksManager);
+
   void registerPlugin(String pluginKey, PluginBase plugin) {
     if (_plugins.containsKey(pluginKey)) {
       throw Exception('Plugin with key "$pluginKey" is already registered.');
     }
 
     _plugins[pluginKey] = plugin;
-    print('Plugin registered: $pluginKey');
-
-    // Initialize the plugin
+    print('Initializing plugin: $pluginKey');
     plugin.initialize();
+    print('Plugin initialized: $pluginKey');
   }
+
 
   /// Deregister a plugin and clean up
   void deregisterPlugin(String pluginKey) {

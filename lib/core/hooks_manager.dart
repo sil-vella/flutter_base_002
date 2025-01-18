@@ -3,19 +3,25 @@ typedef HookCallback = void Function();
 class HooksManager {
   final Map<String, List<HookCallback>> _hooks = {};
 
-  /// Register a hook for a specific event
   void registerHook(String hookName, HookCallback callback) {
+    print('Registering hook: $hookName');
     _hooks.putIfAbsent(hookName, () => []).add(callback);
+    print('Current hooks: $_hooks'); // Log hooks to verify registration
   }
 
-  /// Trigger all callbacks for a specific hook
+
   void triggerHook(String hookName) {
     if (_hooks.containsKey(hookName)) {
+      print('Triggering hook: $hookName with ${_hooks[hookName]!.length} callbacks');
       for (final callback in _hooks[hookName]!) {
+        print('Executing callback for hook: $hookName');
         callback();
       }
+    } else {
+      print('No callbacks registered for hook: $hookName');
     }
   }
+
 
   /// Deregister all hooks for a specific event
   void deregisterHook(String hookName) {
