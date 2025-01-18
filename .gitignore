@@ -10,8 +10,10 @@
 .svn/
 migrate_working_dir/
 
-# My custom files
+# My custom files/dirs
 build.sh
+assets/
+
 
 # IntelliJ related
 *.iml
