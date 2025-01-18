@@ -4,12 +4,19 @@ import 'package:flush_me_im_famous/utils/consts/config.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'core/app_manager.dart';
+import 'core/navigation_manager.dart';
 
 void main() {
+  final navContainer = NavigationContainer();
+
+  navContainer.registerRoute('/', (context) => HomeScreen());
+  navContainer.registerNavItem(DrawerItem(label: 'Home', route: '/', icon: Icons.home));
+
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => AppManager()),
+        ChangeNotifierProvider(create: (_) => AppManager()), // Existing AppManager
+        ChangeNotifierProvider(create: (_) => NavigationContainer()), // Updated NavigationContainer
       ],
       child: MyApp(),
     ),
