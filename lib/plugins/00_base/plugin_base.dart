@@ -19,14 +19,12 @@ abstract class PluginBase {
     moduleMap.forEach((moduleKey, createModule) {
       final module = createModule();
       moduleManager.registerModule(moduleKey, module);
-      print('Module registered: $moduleKey'); // Log module registration
     });
   }
 
   /// Register hooks dynamically from the hookMap
   void registerHooks() {
     hookMap.forEach((hookName, callback) {
-      print('Registering hook: $hookName');
       hooksManager.registerHook(hookName, callback); // Register hooks
     });
   }
