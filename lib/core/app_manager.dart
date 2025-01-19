@@ -27,9 +27,9 @@ class AppManager extends ChangeNotifier {
   void _initializePlugins() {
     final plugins = PluginRegistry.getPlugins(pluginManager, navigationContainer);
 
-    // Register all plugins
     for (var entry in plugins.entries) {
-      pluginManager.registerPlugin(entry.key, entry.value);
+      print('Attempting to register plugin: ${entry.key}');
+      pluginManager.registerPlugin(entry.key, entry.value); // Calls PluginManager logic
     }
 
     print('All plugins initialized.');

@@ -13,9 +13,11 @@ class PluginManager {
 
   PluginManager(this.hooksManager);
 
+  /// Register and initialize a plugin
   void registerPlugin(String pluginKey, PluginBase plugin) {
     if (_plugins.containsKey(pluginKey)) {
-      throw Exception('Plugin with key "$pluginKey" is already registered.');
+      print('Plugin with key "$pluginKey" is already registered. Skipping initialization.');
+      return; // Prevent duplicate registration
     }
 
     _plugins[pluginKey] = plugin;
@@ -24,8 +26,7 @@ class PluginManager {
     print('Plugin initialized: $pluginKey');
   }
 
-
-  /// Deregister a plugin and clean up
+  /// Deregister a plugin
   void deregisterPlugin(String pluginKey) {
     final plugin = _plugins.remove(pluginKey);
     if (plugin != null) {
