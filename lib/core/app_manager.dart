@@ -7,7 +7,8 @@ import 'plugin_registry.dart';
 import 'navigation_manager.dart';
 
 class AppManager extends ChangeNotifier {
-  final String _appState = 'idle';
+  static final AppManager _instance = AppManager._internal();
+
   final NavigationContainer navigationContainer;
   final PluginManager pluginManager;
   final ModuleManager moduleManager;
@@ -16,34 +17,40 @@ class AppManager extends ChangeNotifier {
   bool _isInitialized = false;
   bool get isInitialized => _isInitialized;
 
-  AppManager(this.navigationContainer, this.hooksManager)
-      : pluginManager = PluginManager(hooksManager),
-        moduleManager = ModuleManager() {
-    Logger().info('AppManager initialized.');
-    _initializePlugins();
+  // Factory to always return the singleton instance
+  factory AppManager(NavigationContainer navigationContainer, HooksManager hooksManager) {
+    if (!_instance._isInitialized) {
+      _instance._initializePlugins();
+    }
+    return _instance;
   }
 
+  // Internal constructor for singleton
+  AppManager._internal()
+      : navigationContainer = NavigationContainer(),
+        hooksManager = HooksManager(),
+        pluginManager = PluginManager(HooksManager()),
+        moduleManager = ModuleManager();
+
   void triggerHook(String hookName) {
-    Logger().info('Triggering hook: $hookName');
     hooksManager.triggerHook(hookName);
   }
 
   void _initializePlugins() async {
     final plugins = PluginRegistry.getPlugins(pluginManager, navigationContainer);
-
     for (var entry in plugins.entries) {
-      Logger().info('Attempting to register plugin: ${entry.key}');
       pluginManager.registerPlugin(entry.key, entry.value);
     }
 
-    Logger().info('All plugins initialized.');
-
-    // Trigger hooks after initialization
-    Logger().info('Triggering app_startup and reg_nav hooks.');
     hooksManager.triggerHook('app_startup');
     hooksManager.triggerHook('reg_nav');
-
     _isInitialized = true;
+    notifyListeners();
+  }
+
+  void _disposeApp() {
+    moduleManager.dispose();
+    pluginManager.dispose();
     notifyListeners();
   }
 }

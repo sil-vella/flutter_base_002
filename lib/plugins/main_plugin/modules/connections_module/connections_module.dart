@@ -5,22 +5,48 @@ import 'dart:convert';
 import '../../../../tools/logging/logger.dart';
 
 class ConnectionsModule extends ModuleBase {
+  static ConnectionsModule? _instance;
   final String baseUrl;
+
+  // Map to store any active connections or headers for future extensibility
+  final Map<String, String> _customHeaders = {};
 
   ConnectionsModule._internal(this.baseUrl) {
     _registerConnectionMethods();
   }
 
-  /// Factory method to create an instance with the specified baseUrl
+  /// Factory method to provide the singleton instance
   factory ConnectionsModule(String baseUrl) {
-    return ConnectionsModule._internal(baseUrl);
+    if (_instance == null) {
+      Logger().info('Initializing ConnectionsModule with baseUrl: $baseUrl');
+      _instance = ConnectionsModule._internal(baseUrl);
+    } else {
+      Logger().info('ConnectionsModule instance already exists.');
+    }
+    return _instance!;
   }
 
   /// Registers methods with the module
   void _registerConnectionMethods() {
+    Logger().info('Registering connection methods in ConnectionsModule.');
     registerMethod('sendGetRequest', sendGetRequest);
     registerMethod('sendPostRequest', sendPostRequest);
     registerMethod('sendRequest', sendRequest);
+  }
+
+  /// Dispose method to clean up resources
+  @override
+  void dispose() {
+    Logger().info('Cleaning up ConnectionsModule resources.');
+
+    // Clear custom headers or state
+    _customHeaders.clear();
+    Logger().info('Custom headers cleared.');
+
+    // Log if there were any additional cleanup tasks
+    Logger().info('ConnectionsModule disposed successfully.');
+
+    super.dispose(); // Call base dispose logic
   }
 
   /// Validates URLs
@@ -38,7 +64,7 @@ class ConnectionsModule extends ModuleBase {
     try {
       final response = await http.get(
         url,
-        headers: {"Content-Type": "application/json"},
+        headers: {"Content-Type": "application/json", ..._customHeaders},
       );
 
       Logger().info('GET $url - Status: ${response.statusCode}');
@@ -61,7 +87,7 @@ class ConnectionsModule extends ModuleBase {
     try {
       final response = await http.post(
         url,
-        headers: {"Content-Type": "application/json"},
+        headers: {"Content-Type": "application/json", ..._customHeaders},
         body: jsonEncode(data),
       );
 
@@ -91,24 +117,24 @@ class ConnectionsModule extends ModuleBase {
 
       switch (method.toUpperCase()) {
         case 'GET':
-          response = await http.get(url, headers: {"Content-Type": "application/json"});
+          response = await http.get(url, headers: {"Content-Type": "application/json", ..._customHeaders});
           break;
         case 'POST':
           response = await http.post(
             url,
-            headers: {"Content-Type": "application/json"},
+            headers: {"Content-Type": "application/json", ..._customHeaders},
             body: jsonEncode(data ?? {}),
           );
           break;
         case 'PUT':
           response = await http.put(
             url,
-            headers: {"Content-Type": "application/json"},
+            headers: {"Content-Type": "application/json", ..._customHeaders},
             body: jsonEncode(data ?? {}),
           );
           break;
         case 'DELETE':
-          response = await http.delete(url, headers: {"Content-Type": "application/json"});
+          response = await http.delete(url, headers: {"Content-Type": "application/json", ..._customHeaders});
           break;
         default:
           throw Exception('Unsupported HTTP method: $method');

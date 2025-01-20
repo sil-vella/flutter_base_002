@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import '../../../../core/00_base/module_base.dart';
-import '../../../../tools/logging/logger.dart'; // Ensure Logger is imported
+import '../../../../tools/logging/logger.dart';
 
 class AnimationsModule extends ModuleBase {
   static AnimationsModule? _instance;
+
+  // List to store animation controllers for cleanup
+  final List<AnimationController> _controllers = [];
 
   AnimationsModule._internal() {
     Logger().info('AnimationsModule instance created.');
@@ -30,12 +33,37 @@ class AnimationsModule extends ModuleBase {
     Logger().info('Animation methods registered successfully.');
   }
 
+  /// Cleanup logic for AnimationsModule
+  @override
+  void dispose() {
+    Logger().info('Cleaning up AnimationsModule resources.');
+
+    // Dispose all animation controllers
+    for (final controller in _controllers) {
+      if (controller.isAnimating) {
+        controller.stop(); // Stop any ongoing animations
+      }
+      controller.dispose(); // Dispose the controller
+      Logger().info('Disposed AnimationController: $controller');
+    }
+    _controllers.clear();
+
+    super.dispose();
+  }
+
+  /// Registers an AnimationController for later cleanup
+  void registerController(AnimationController controller) {
+    _controllers.add(controller);
+    Logger().info('Registered AnimationController: $controller');
+  }
+
   /// Applies fade animation to the provided widget
   Widget applyFadeAnimation({
     required Widget child,
     required AnimationController controller,
     required Duration duration,
   }) {
+    registerController(controller); // Ensure controller is tracked for cleanup
     Logger().info('Applying fade animation.');
     return AnimatedBuilder(
       animation: controller,
@@ -56,6 +84,7 @@ class AnimationsModule extends ModuleBase {
     double begin = 0.8,
     double end = 1.2,
   }) {
+    registerController(controller); // Ensure controller is tracked for cleanup
     Logger().info('Applying scale animation.');
     final scaleAnimation = Tween<double>(begin: begin, end: end).animate(
       CurvedAnimation(parent: controller, curve: Curves.easeInOut),
@@ -79,6 +108,7 @@ class AnimationsModule extends ModuleBase {
     Offset begin = const Offset(0, -1),
     Offset end = const Offset(0, 0),
   }) {
+    registerController(controller); // Ensure controller is tracked for cleanup
     Logger().info('Applying slide animation.');
     final slideAnimation = Tween<Offset>(begin: begin, end: end).animate(
       CurvedAnimation(parent: controller, curve: Curves.easeInOut),

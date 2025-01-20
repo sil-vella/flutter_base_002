@@ -18,6 +18,7 @@ class HomeScreen extends BaseScreen {
 class HomeScreenState extends BaseScreenState<HomeScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
+  String? _testData;
 
   @override
   void initState() {
@@ -26,6 +27,7 @@ class HomeScreenState extends BaseScreenState<HomeScreen>
       vsync: this,
       duration: const Duration(seconds: 2),
     );
+    _fetchTestData();
   }
 
   @override
@@ -34,16 +36,46 @@ class HomeScreenState extends BaseScreenState<HomeScreen>
     super.dispose();
   }
 
+  Future<void> _fetchTestData() async {
+    // Retrieve the ConnectionsModule using its key
+    final connectionModule = ModuleManager().getModule('connection_module');
+
+    if (connectionModule == null) {
+      setState(() {
+        _testData = "Connection module not available.";
+      });
+      return;
+    }
+
+    try {
+      // Send a GET request to retrieve test data
+      final response = await connectionModule.callMethod(
+        'sendGetRequest',
+        ['/test-data'], // Replace with your test endpoint
+      );
+      setState(() {
+        _testData = response.toString();
+      });
+    } catch (e) {
+      setState(() {
+        _testData = "Failed to fetch test data: $e";
+      });
+    }
+  }
+
   @override
   Widget buildContent(BuildContext context) {
-    // Retrieve the AnimationsModule using its key
+    // Retrieve the AnimationsModule and AppStateProvider using their keys
     final animationsModule = ModuleManager().getModule('animations_module');
+    final appStateProvider = ModuleManager().getModule('app_state_provider_module');
 
-    if (animationsModule == null) {
+    if (animationsModule == null || appStateProvider == null) {
       return const Center(
-        child: Text("Animations module not available."),
+        child: Text("Required modules are not available."),
       );
     }
+
+    final appState = appStateProvider.callMethod('getMainAppState', ['main_state']);
 
     return Stack(
       children: [
@@ -51,6 +83,21 @@ class HomeScreenState extends BaseScreenState<HomeScreen>
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              // Display the main app state
+              Text(
+                'App State: $appState',
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 20),
+
+              // Display test data retrieved from the server
+              Text(
+                _testData ?? "Fetching test data from server...",
+                style: const TextStyle(fontSize: 16),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 20),
+
               // Animated text
               animationsModule.callMethod(
                 'applyFadeAnimation',
@@ -65,6 +112,8 @@ class HomeScreenState extends BaseScreenState<HomeScreen>
                 },
               ),
               const SizedBox(height: 20),
+
+              // Button to trigger animation
               ElevatedButton(
                 onPressed: () {
                   // Trigger the animation

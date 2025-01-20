@@ -26,19 +26,27 @@ class ModuleManager {
 
   /// Deregister a module
   void deregisterModule(String moduleKey) {
-    if (_modules.remove(moduleKey) != null) {
-      Logger().info('Module deregistered: $moduleKey');
+    final module = _modules.remove(moduleKey);
+    if (module != null) {
+      module.dispose();
+      Logger().info('Module deregistered and disposed: $moduleKey');
     }
   }
 
   /// Get a module
   T? getModule<T extends ModuleBase>(String moduleKey) {
     Logger().info('Fetching module: $moduleKey');
-    if (_modules.containsKey(moduleKey)) {
-      return _modules[moduleKey] as T?;
-    } else {
-      Logger().error('Module not found: $moduleKey');
-      return null;
+    return _modules[moduleKey] as T?;
+  }
+
+  /// Dispose all modules
+  void dispose() {
+    Logger().info('Disposing all modules.');
+    for (var entry in _modules.entries) {
+      entry.value.dispose();
+      Logger().info('Disposed module: ${entry.key}');
     }
+    _modules.clear();
+    Logger().info('All modules have been disposed.');
   }
 }

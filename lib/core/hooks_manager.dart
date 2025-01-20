@@ -3,6 +3,12 @@ import '../tools/logging/logger.dart';
 typedef HookCallback = void Function();
 
 class HooksManager {
+  static final HooksManager _instance = HooksManager._internal();
+
+  factory HooksManager() => _instance;
+
+  HooksManager._internal();
+
   final Map<String, List<HookCallback>> _hooks = {};
 
   void registerHook(String hookName, HookCallback callback) {

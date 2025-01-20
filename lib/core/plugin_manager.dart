@@ -30,6 +30,7 @@ class PluginManager {
     final plugin = _plugins.remove(pluginKey);
     if (plugin != null) {
       plugin.dispose();
+      Logger().info('Plugin deregistered: $pluginKey');
     }
     _pluginStates.remove(pluginKey);
   }
@@ -48,6 +49,27 @@ class PluginManager {
   void updatePluginState(String pluginKey, dynamic newState) {
     if (_pluginStates.containsKey(pluginKey)) {
       _pluginStates[pluginKey] = newState;
+      Logger().info('Plugin state updated for $pluginKey.');
     }
+  }
+
+  /// Clear all plugins
+  void clearPlugins() {
+    _plugins.clear();
+    _pluginStates.clear();
+    Logger().info('All plugins and their states have been cleared.');
+  }
+
+  /// Dispose all plugins
+  void dispose() {
+    Logger().info('Disposing all plugins.');
+    for (final plugin in _plugins.values) {
+      if (plugin is PluginBase) {
+        plugin.dispose();
+        Logger().info('Disposed plugin: ${plugin.runtimeType}');
+      }
+    }
+    clearPlugins(); // Clear the plugins and their states
+    Logger().info('All plugins disposed and cleared.');
   }
 }

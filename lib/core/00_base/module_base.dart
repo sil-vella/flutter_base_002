@@ -13,6 +13,7 @@ abstract class ModuleBase {
     _methodMap[methodName] = method;
   }
 
+  /// Dynamically call a registered method
   dynamic callMethod(String methodName, [dynamic args = const [], Map<String, dynamic>? namedArgs]) {
     if (_methodMap.containsKey(methodName)) {
       final method = _methodMap[methodName]!;
@@ -27,4 +28,8 @@ abstract class ModuleBase {
     }
   }
 
+  /// Dispose method to clean up resources
+  void dispose() {
+    Logger().info('${this.runtimeType} disposed.');
+  }
 }

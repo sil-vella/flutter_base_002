@@ -3,11 +3,25 @@ import '../../../../core/00_base/module_base.dart';
 import '../../../../tools/logging/logger.dart';
 
 class AppStateProvider extends ModuleBase with ChangeNotifier {
+  static AppStateProvider? _instance;
+
   final Map<String, dynamic> _pluginStates = {}; // Stores states for plugins
   Map<String, dynamic> _mainAppState = {'main_state': 'idle'}; // Default main app state
 
-  AppStateProvider() {
+  AppStateProvider._internal() {
+    Logger().info('AppStateProvider instance created.');
     _registerAppStateMethods();
+  }
+
+  /// Factory method to provide the singleton instance
+  factory AppStateProvider() {
+    if (_instance == null) {
+      Logger().info('Initializing AppStateProvider for the first time.');
+      _instance = AppStateProvider._internal();
+    } else {
+      Logger().info('AppStateProvider instance already exists.');
+    }
+    return _instance!;
   }
 
   /// Registers state management methods
@@ -21,6 +35,26 @@ class AppStateProvider extends ModuleBase with ChangeNotifier {
     registerMethod('setMainAppState', setMainAppState);
     registerMethod('getMainAppState', getMainAppState);
     registerMethod('updateMainAppState', updateMainAppState);
+  }
+
+  /// Dispose method to clean up resources
+  @override
+  void dispose() {
+    Logger().info('Cleaning up AppStateProvider resources.');
+
+    // Clear plugin states
+    _pluginStates.clear();
+    Logger().info('Plugin states cleared.');
+
+    // Reset the main app state to the default
+    _mainAppState = {'main_state': 'idle'};
+    Logger().info('Main app state reset to default.');
+
+    // Notify listeners that state has been reset (if necessary)
+    notifyListeners();
+
+    super.dispose();
+    Logger().info('AppStateProvider disposed successfully.');
   }
 
   // ------ Plugin State Methods ------
