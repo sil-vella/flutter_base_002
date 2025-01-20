@@ -1,6 +1,17 @@
-import '../plugins/00_base/module_base.dart';
+import '../tools/logging/logger.dart';
+import '00_base/module_base.dart';
 
 class ModuleManager {
+  // Singleton instance
+  static final ModuleManager _instance = ModuleManager._internal();
+
+  // Factory constructor to return the same instance
+  factory ModuleManager() => _instance;
+
+  // Internal constructor for singleton
+  ModuleManager._internal();
+
+  // Module storage
   final Map<String, ModuleBase> _modules = {};
 
   /// Register a module
@@ -10,41 +21,24 @@ class ModuleManager {
     }
 
     _modules[moduleKey] = module;
-
-    // Log the module registration
-    print('Module registered: $moduleKey');
+    Logger().info('Module registered: $moduleKey');
   }
 
   /// Deregister a module
   void deregisterModule(String moduleKey) {
     if (_modules.remove(moduleKey) != null) {
-      print('Module deregistered: $moduleKey');
+      Logger().info('Module deregistered: $moduleKey');
     }
   }
 
   /// Get a module
   T? getModule<T extends ModuleBase>(String moduleKey) {
-    return _modules[moduleKey] as T?;
-  }
-
-  /// Call a method on a module
-  dynamic callModuleMethod(String moduleKey, String methodName, [dynamic args]) {
-    final module = _modules[moduleKey];
-    if (module != null) {
-      return module.callMethod(methodName, args);
-    }
-    throw Exception('Module or method not found: $moduleKey -> $methodName');
-  }
-
-  /// Log all registered modules
-  void logRegisteredModules() {
-    if (_modules.isEmpty) {
-      print('No modules are currently registered.');
+    Logger().info('Fetching module: $moduleKey');
+    if (_modules.containsKey(moduleKey)) {
+      return _modules[moduleKey] as T?;
     } else {
-      print('Registered modules:');
-      _modules.keys.forEach((moduleKey) {
-        print('- $moduleKey');
-      });
+      Logger().error('Module not found: $moduleKey');
+      return null;
     }
   }
 }

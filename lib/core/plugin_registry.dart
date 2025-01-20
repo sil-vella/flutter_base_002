@@ -1,4 +1,5 @@
 import 'package:flush_me_im_famous/plugins/main_plugin/main_plugin_main.dart';
+import '../tools/logging/logger.dart';
 import 'plugin_manager.dart';
 import 'navigation_manager.dart';
 
@@ -14,9 +15,9 @@ class PluginRegistry {
           navigationContainer,
         ),
       });
-      print('Plugins registered in PluginRegistry: ${_pluginInstances.keys}');
+      Logger().info('Plugins registered in PluginRegistry: ${_pluginInstances.keys}');
     } else {
-      print('Plugins already registered. Skipping re-registration.');
+      Logger().info('Plugins already registered. Skipping re-registration.');
     }
 
     return _pluginInstances;

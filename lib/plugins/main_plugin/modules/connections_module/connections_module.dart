@@ -1,6 +1,8 @@
-import '../../../00_base/module_base.dart';
+import '../../../../core/00_base/module_base.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+
+import '../../../../tools/logging/logger.dart';
 
 class ConnectionsModule extends ModuleBase {
   final String baseUrl;
@@ -39,7 +41,7 @@ class ConnectionsModule extends ModuleBase {
         headers: {"Content-Type": "application/json"},
       );
 
-      print('GET $url - Status: ${response.statusCode}');
+      Logger().info('GET $url - Status: ${response.statusCode}');
 
       if (response.statusCode == 200) {
         return jsonDecode(response.body);
@@ -63,7 +65,7 @@ class ConnectionsModule extends ModuleBase {
         body: jsonEncode(data),
       );
 
-      print('POST $url - Status: ${response.statusCode}');
+      Logger().info('POST $url - Status: ${response.statusCode}');
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         return jsonDecode(response.body);
@@ -112,7 +114,7 @@ class ConnectionsModule extends ModuleBase {
           throw Exception('Unsupported HTTP method: $method');
       }
 
-      print('$method $url - Status: ${response.statusCode}');
+      Logger().info('$method $url - Status: ${response.statusCode}');
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
         return jsonDecode(response.body);

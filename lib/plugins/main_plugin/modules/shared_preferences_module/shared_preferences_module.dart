@@ -1,5 +1,6 @@
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../../00_base/module_base.dart';
+import '../../../../core/00_base/module_base.dart';
+import '../../../../tools/logging/logger.dart';
 
 class SharedPreferencesService extends ModuleBase {
   // Singleton setup
@@ -16,7 +17,7 @@ class SharedPreferencesService extends ModuleBase {
   /// Initialize SharedPreferences once during app startup
   Future<void> init() async {
     _prefs = await SharedPreferences.getInstance();
-    print('SharedPreferences initialized.');
+    Logger().info('SharedPreferences initialized.');
   }
 
   /// Registers shared preferences methods dynamically

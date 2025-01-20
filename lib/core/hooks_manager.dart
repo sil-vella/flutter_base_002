@@ -1,24 +1,26 @@
+import '../tools/logging/logger.dart';
+
 typedef HookCallback = void Function();
 
 class HooksManager {
   final Map<String, List<HookCallback>> _hooks = {};
 
   void registerHook(String hookName, HookCallback callback) {
-    print('Registering hook: $hookName');
+    Logger().info('Registering hook: $hookName');
     _hooks.putIfAbsent(hookName, () => []).add(callback);
-    print('Current hooks: $_hooks'); // Log hooks to verify registration
+    Logger().info('Current hooks: $_hooks'); // Log hooks to verify registration
   }
 
 
   void triggerHook(String hookName) {
     if (_hooks.containsKey(hookName)) {
-      print('Triggering hook: $hookName with ${_hooks[hookName]!.length} callbacks');
+      Logger().info('Triggering hook: $hookName with ${_hooks[hookName]!.length} callbacks');
       for (final callback in _hooks[hookName]!) {
-        print('Executing callback for hook: $hookName');
+        Logger().info('Executing callback for hook: $hookName');
         callback();
       }
     } else {
-      print('No callbacks registered for hook: $hookName');
+      Logger().info('No callbacks registered for hook: $hookName');
     }
   }
 

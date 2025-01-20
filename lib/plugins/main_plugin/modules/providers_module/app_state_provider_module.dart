@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../00_base/module_base.dart';
+import '../../../../core/00_base/module_base.dart';
+import '../../../../tools/logging/logger.dart';
 
 class AppStateProvider extends ModuleBase with ChangeNotifier {
   final Map<String, dynamic> _pluginStates = {}; // Stores states for plugins
@@ -33,7 +34,7 @@ class AppStateProvider extends ModuleBase with ChangeNotifier {
   void registerPluginState(String pluginKey, dynamic initialState) {
     if (!_pluginStates.containsKey(pluginKey)) {
       _pluginStates[pluginKey] = initialState;
-      print("Registered state for key: $pluginKey"); // Debug log
+      Logger().info("Registered state for key: $pluginKey"); // Debug log
       notifyListeners();
     }
   }
@@ -42,17 +43,17 @@ class AppStateProvider extends ModuleBase with ChangeNotifier {
   void unregisterPluginState(String pluginKey) {
     if (_pluginStates.containsKey(pluginKey)) {
       _pluginStates.remove(pluginKey);
-      print("Unregistered state for key: $pluginKey"); // Debug log
+      Logger().info("Unregistered state for key: $pluginKey"); // Debug log
       notifyListeners();
     } else {
-      print("No state found for key: $pluginKey to unregister"); // Debug log
+      Logger().info("No state found for key: $pluginKey to unregister"); // Debug log
     }
   }
 
   /// Retrieve a plugin state dynamically
   T? getPluginState<T>(String pluginKey) {
     final pluginState = _pluginStates[pluginKey];
-    print("Retrieved state for key: $pluginKey: $pluginState"); // Debug log
+    Logger().info("Retrieved state for key: $pluginKey: $pluginState"); // Debug log
     if (pluginState is Map && T == Map<String, dynamic>) {
       return Map<String, dynamic>.from(pluginState) as T;
     }
@@ -62,16 +63,16 @@ class AppStateProvider extends ModuleBase with ChangeNotifier {
   /// Update a plugin state dynamically
   Future<void> updatePluginState(String pluginKey, Map<String, dynamic> newState) async {
     if (_pluginStates.containsKey(pluginKey)) {
-      print("Existing state for $pluginKey: ${_pluginStates[pluginKey]}");
+      Logger().info("Existing state for $pluginKey: ${_pluginStates[pluginKey]}");
       _pluginStates[pluginKey] = {
         ..._pluginStates[pluginKey],
         ...newState,
       };
-      print("Updated state for $pluginKey: ${_pluginStates[pluginKey]}");
+      Logger().info("Updated state for $pluginKey: ${_pluginStates[pluginKey]}");
     } else {
-      print("No existing state for $pluginKey. Creating new state.");
+      Logger().info("No existing state for $pluginKey. Creating new state.");
       _pluginStates[pluginKey] = newState; // Create new state
-      print("Created new state for $pluginKey: ${_pluginStates[pluginKey]}");
+      Logger().info("Created new state for $pluginKey: ${_pluginStates[pluginKey]}");
     }
     notifyListeners();
   }
@@ -81,7 +82,7 @@ class AppStateProvider extends ModuleBase with ChangeNotifier {
   /// Set the initial main app state
   void setMainAppState(Map<String, dynamic> initialState) {
     _mainAppState = {'main_state': 'idle', ...initialState};
-    print("Main app state initialized: $_mainAppState"); // Debug log
+    Logger().info("Main app state initialized: $_mainAppState"); // Debug log
     notifyListeners();
   }
 
@@ -91,14 +92,14 @@ class AppStateProvider extends ModuleBase with ChangeNotifier {
   /// Update a specific key-value pair in the main app state
   void updateMainAppState(String key, dynamic value) {
     _mainAppState[key] = value;
-    print("Main app state updated: key=$key, value=$value"); // Debug log
+    Logger().info("Main app state updated: key=$key, value=$value"); // Debug log
     notifyListeners();
   }
 
   /// Retrieve a specific value from the main app state
   T? getMainAppState<T>(String key) {
     final value = _mainAppState[key] as T?;
-    print("Retrieved main app state value for key=$key: $value"); // Debug log
+    Logger().info("Retrieved main app state value for key=$key: $value"); // Debug log
     return value;
   }
 }

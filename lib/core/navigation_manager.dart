@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../tools/logging/logger.dart';
 import 'hooks_manager.dart';
 
 class NavigationContainer extends ChangeNotifier {
@@ -23,7 +24,7 @@ class NavigationContainer extends ChangeNotifier {
   // Register a new navigation item
   void registerNavItem(DrawerItem item) {
     _drawerItems.add(item);
-    print('DrawerItem added: ${item.label}');
+    Logger().info('DrawerItem added: ${item.label}');
     notifyListeners();
   }
 

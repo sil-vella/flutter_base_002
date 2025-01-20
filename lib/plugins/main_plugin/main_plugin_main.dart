@@ -1,24 +1,30 @@
 import 'package:flush_me_im_famous/core/navigation_manager.dart';
+import 'package:flush_me_im_famous/plugins/main_plugin/modules/animations_module/animations_module.dart';
+import 'package:flush_me_im_famous/plugins/main_plugin/modules/providers_module/app_state_provider_module.dart';
 import 'package:flush_me_im_famous/plugins/main_plugin/screens/home_screen.dart';
 import 'package:flutter/material.dart';
-
+import '../../core/00_base/plugin_base.dart';
 import '../../core/module_manager.dart';
 import '../../core/hooks_manager.dart';
+import '../../tools/logging/logger.dart';
 import '../../utils/consts/config.dart';
-import '../00_base/plugin_base.dart';
 import 'modules/connections_module/connections_module.dart';
+import 'modules/shared_preferences_module/shared_preferences_module.dart';
 
 class MainPlugin extends PluginBase {
   MainPlugin(HooksManager hooksManager, ModuleManager moduleManager, NavigationContainer navigationContainer)
       : super(hooksManager, moduleManager) {
     moduleMap.addAll({
+      'app_state_provider_module': () => AppStateProvider(),
+      'shared_pref_module': () => SharedPreferencesService(),
       'connection_module': () => ConnectionsModule(Config.apiUrl),
+      'animations_module': () => AnimationsModule(),
     });
 
     // Add hooks directly in hookMap
     hookMap.addAll({
       'app_startup': () {
-        print('MainPlugin: app_startup hook triggered.');
+        Logger().info('MainPlugin: app_startup hook triggered.');
       },
       'reg_nav': () {
         navigationContainer.registerRoute('/', (context) => HomeScreen());
@@ -27,22 +33,22 @@ class MainPlugin extends PluginBase {
           route: '/',
           icon: Icons.home,
         ));
-        print('MainPlugin: Navigation items registered.');
+        Logger().info('MainPlugin: Navigation items registered.');
       },
     });
 
-    print('MainPlugin instance created.');
+    Logger().info('MainPlugin instance created.');
   }
 
   @override
   void initialize() {
     super.initialize();
-    print('MainPlugin initialized.');
+    Logger().info('MainPlugin initialized.');
   }
 
   @override
   void dispose() {
     super.dispose();
-    print('MainPlugin disposed.');
+    Logger().info('MainPlugin disposed.');
   }
 }

@@ -1,6 +1,5 @@
-import 'package:flush_me_im_famous/core/navigation_manager.dart';
-
-import '../plugins/00_base/plugin_base.dart';
+import '../tools/logging/logger.dart';
+import '00_base/plugin_base.dart';
 import 'hooks_manager.dart';
 import 'module_manager.dart';
 
@@ -16,14 +15,14 @@ class PluginManager {
   /// Register and initialize a plugin
   void registerPlugin(String pluginKey, PluginBase plugin) {
     if (_plugins.containsKey(pluginKey)) {
-      print('Plugin with key "$pluginKey" is already registered. Skipping initialization.');
+      Logger().info('Plugin with key "$pluginKey" is already registered. Skipping initialization.');
       return; // Prevent duplicate registration
     }
 
     _plugins[pluginKey] = plugin;
-    print('Initializing plugin: $pluginKey');
+    Logger().info('Initializing plugin: $pluginKey');
     plugin.initialize();
-    print('Plugin initialized: $pluginKey');
+    Logger().info('Plugin initialized: $pluginKey');
   }
 
   /// Deregister a plugin

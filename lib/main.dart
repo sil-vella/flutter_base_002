@@ -1,4 +1,5 @@
 import 'package:flush_me_im_famous/plugins/main_plugin/screens/home_screen.dart';
+import 'package:flush_me_im_famous/tools/logging/logger.dart';
 import 'package:flush_me_im_famous/utils/consts/theme_consts.dart';
 import 'package:flush_me_im_famous/utils/consts/config.dart';
 import 'package:flutter/material.dart';
@@ -30,29 +31,27 @@ class MyApp extends StatefulWidget {
   _MyAppState createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
-  @override
-  void initState() {
-    super.initState();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final appManager = Provider.of<AppManager>(context, listen: false);
-      print('AppManager accessed in widget tree.');
-
-      // Trigger hooks after AppManager is accessed
-      appManager.triggerHook('app_startup');
-      appManager.triggerHook('reg_nav');
-    });
-  }
-
-
+class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
+    return Consumer<AppManager>(
+      builder: (context, appManager, child) {
+        if (!appManager.isInitialized) {
+          return const MaterialApp(
+            home: Scaffold(
+              body: Center(
+                child: CircularProgressIndicator(),
+              ),
+            ),
+          );
+        }
 
-    return MaterialApp(
-      title: Config.appTitle,
-      theme: AppTheme.darkTheme,
-      home: const HomeScreen(),
+        return MaterialApp(
+          title: Config.appTitle,
+          theme: AppTheme.darkTheme,
+          home: const HomeScreen(),
+        );
+      },
     );
   }
 }
