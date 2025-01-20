@@ -1,6 +1,5 @@
 import 'package:flush_me_im_famous/core/navigation_manager.dart';
 import 'package:flush_me_im_famous/plugins/main_plugin/modules/animations_module/animations_module.dart';
-import 'package:flush_me_im_famous/plugins/main_plugin/modules/providers_module/app_state_provider_module.dart';
 import 'package:flush_me_im_famous/plugins/main_plugin/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import '../../core/00_base/plugin_base.dart';
@@ -15,7 +14,6 @@ class MainPlugin extends PluginBase {
   MainPlugin(HooksManager hooksManager, ModuleManager moduleManager, NavigationContainer navigationContainer)
       : super(hooksManager, moduleManager) {
     moduleMap.addAll({
-      'app_state_provider_module': () => AppStateProvider(),
       'shared_pref_module': () => SharedPreferencesService(),
       'connection_module': () => ConnectionsModule(Config.apiUrl),
       'animations_module': () => AnimationsModule(),

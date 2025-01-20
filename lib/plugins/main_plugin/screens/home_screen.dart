@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/animation.dart';
+import 'package:provider/provider.dart';
 import '../../../core/00_base/screen_base.dart';
+import '../../../core/state_manager.dart';
 import '../../../core/module_manager.dart';
 
 class HomeScreen extends BaseScreen {
@@ -65,17 +67,20 @@ class HomeScreenState extends BaseScreenState<HomeScreen>
 
   @override
   Widget buildContent(BuildContext context) {
-    // Retrieve the AnimationsModule and AppStateProvider using their keys
-    final animationsModule = ModuleManager().getModule('animations_module');
-    final appStateProvider = ModuleManager().getModule('app_state_provider_module');
+    // Use Provider to fetch the StateManager instance
+    final stateManager = Provider.of<StateManager>(context, listen: true);
 
-    if (animationsModule == null || appStateProvider == null) {
+    // Retrieve the main app state
+    final appState = stateManager.mainAppState['main_state'];
+
+    // Retrieve AnimationsModule using ModuleManager
+    final animationsModule = ModuleManager().getModule('animations_module');
+
+    if (animationsModule == null) {
       return const Center(
         child: Text("Required modules are not available."),
       );
     }
-
-    final appState = appStateProvider.callMethod('getMainAppState', ['main_state']);
 
     return Stack(
       children: [

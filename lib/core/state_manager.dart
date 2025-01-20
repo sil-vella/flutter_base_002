@@ -2,22 +2,22 @@ import 'package:flutter/material.dart';
 import '../../../../core/00_base/module_base.dart';
 import '../../../../tools/logging/logger.dart';
 
-class AppStateProvider extends ModuleBase with ChangeNotifier {
-  static AppStateProvider? _instance;
+class StateManager extends ModuleBase with ChangeNotifier {
+  static StateManager? _instance;
 
   final Map<String, dynamic> _pluginStates = {}; // Stores states for plugins
   Map<String, dynamic> _mainAppState = {'main_state': 'idle'}; // Default main app state
 
-  AppStateProvider._internal() {
+  StateManager._internal() {
     Logger().info('AppStateProvider instance created.');
     _registerAppStateMethods();
   }
 
   /// Factory method to provide the singleton instance
-  factory AppStateProvider() {
+  factory StateManager() {
     if (_instance == null) {
       Logger().info('Initializing AppStateProvider for the first time.');
-      _instance = AppStateProvider._internal();
+      _instance = StateManager._internal();
     } else {
       Logger().info('AppStateProvider instance already exists.');
     }
