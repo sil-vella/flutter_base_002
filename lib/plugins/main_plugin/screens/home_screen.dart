@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/animation.dart';
 import 'package:provider/provider.dart';
 import '../../../core/00_base/screen_base.dart';
-import '../../../core/state_manager.dart';
-import '../../../core/module_manager.dart';
+import '../../../core/managers/state_manager.dart';
+import '../../../core/managers/module_manager.dart';
 
 class HomeScreen extends BaseScreen {
   const HomeScreen({Key? key}) : super(key: key);
@@ -67,11 +67,6 @@ class HomeScreenState extends BaseScreenState<HomeScreen>
 
   @override
   Widget buildContent(BuildContext context) {
-    // Use Provider to fetch the StateManager instance
-    final stateManager = Provider.of<StateManager>(context, listen: true);
-
-    // Retrieve the main app state
-    final appState = stateManager.mainAppState['main_state'];
 
     // Retrieve AnimationsModule using ModuleManager
     final animationsModule = ModuleManager().getModule('animations_module');
@@ -90,7 +85,7 @@ class HomeScreenState extends BaseScreenState<HomeScreen>
             children: [
               // Display the main app state
               Text(
-                'App State: $appState',
+                'App State: ',
                 style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 20),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../tools/logging/logger.dart';
+import '../../tools/logging/logger.dart';
 import 'hooks_manager.dart';
 
 class NavigationContainer extends ChangeNotifier {

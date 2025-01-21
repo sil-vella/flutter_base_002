@@ -1,5 +1,5 @@
-import '../tools/logging/logger.dart';
-import '00_base/module_base.dart';
+import '../../tools/logging/logger.dart';
+import '../00_base/module_base.dart';
 
 class ModuleManager {
   // Singleton instance

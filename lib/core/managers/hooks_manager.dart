@@ -1,4 +1,4 @@
-import '../tools/logging/logger.dart';
+import '../../tools/logging/logger.dart';
 
 typedef HookCallback = void Function();
 

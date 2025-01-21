@@ -1,10 +1,11 @@
+import 'package:flush_me_im_famous/core/managers/plugin_manager.dart';
 import 'package:flutter/material.dart';
-import '../tools/logging/logger.dart';
-import 'plugin_manager.dart';
-import 'module_manager.dart';
+import '../services/plugin_registry.dart';
+import '../services/shared_preferences.dart';
 import 'hooks_manager.dart';
-import 'plugin_registry.dart';
+import 'module_manager.dart';
 import 'navigation_manager.dart';
+import 'services_manager.dart';
 
 class AppManager extends ChangeNotifier {
   static final AppManager _instance = AppManager._internal();
@@ -13,6 +14,7 @@ class AppManager extends ChangeNotifier {
   final PluginManager pluginManager;
   final ModuleManager moduleManager;
   final HooksManager hooksManager;
+  final ServicesManager servicesManager; // Add ServicesManager
 
   bool _isInitialized = false;
   bool get isInitialized => _isInitialized;
@@ -30,13 +32,31 @@ class AppManager extends ChangeNotifier {
       : navigationContainer = NavigationContainer(),
         hooksManager = HooksManager(),
         pluginManager = PluginManager(HooksManager()),
-        moduleManager = ModuleManager();
+        moduleManager = ModuleManager(),
+        servicesManager = ServicesManager(); // Initialize ServicesManager
 
+  /// Initializes app-wide services
+  /// Initializes app-wide services
+  Future<void> _initializeServices() async {
+    // Fetch all self-registered services and initialize them
+    final registeredServices = servicesManager.getAllServices();
+    for (var service in registeredServices.values) {
+      await service.initialize();
+    }
+
+    debugPrint('App services initialized successfully.');
+  }
+
+
+  /// Trigger hooks dynamically
   void triggerHook(String hookName) {
     hooksManager.triggerHook(hookName);
   }
 
-  void _initializePlugins() async {
+  /// Initializes plugins and services
+  Future<void> _initializePlugins() async {
+    await _initializeServices(); // Initialize services first
+
     final plugins = PluginRegistry.getPlugins(pluginManager, navigationContainer);
     for (var entry in plugins.entries) {
       pluginManager.registerPlugin(entry.key, entry.value);
@@ -48,9 +68,12 @@ class AppManager extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Cleans up app resources
   void _disposeApp() {
     moduleManager.dispose();
     pluginManager.dispose();
+    servicesManager.dispose(); // Dispose services
     notifyListeners();
+    debugPrint('App resources disposed successfully.');
   }
 }

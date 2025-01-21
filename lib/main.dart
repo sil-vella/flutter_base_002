@@ -1,24 +1,23 @@
 import 'package:flush_me_im_famous/plugins/main_plugin/screens/home_screen.dart';
-import 'package:flush_me_im_famous/tools/logging/logger.dart';
 import 'package:flush_me_im_famous/utils/consts/theme_consts.dart';
 import 'package:flush_me_im_famous/utils/consts/config.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'core/app_manager.dart';
-import 'core/hooks_manager.dart';
-import 'core/navigation_manager.dart';
-import 'core/state_manager.dart';
+import 'core/managers/app_manager.dart';
+import 'core/managers/hooks_manager.dart';
+import 'core/managers/navigation_manager.dart';
+import 'core/managers/state_manager.dart';
 
 void main() {
   final navigationContainer = NavigationContainer();
-  final hooksManager = HooksManager(); // Single instance of HooksManager
+  final hooksManager = HooksManager();
 
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AppManager(navigationContainer, hooksManager)),
+        ChangeNotifierProvider(create: (_) => StateManager()),
         ChangeNotifierProvider.value(value: navigationContainer),
-        ChangeNotifierProvider(create: (_) => StateManager()), // Add StateManager here
       ],
       child: MyApp(),
     ),

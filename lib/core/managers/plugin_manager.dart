@@ -1,5 +1,5 @@
-import '../tools/logging/logger.dart';
-import '00_base/plugin_base.dart';
+import '../../tools/logging/logger.dart';
+import '../00_base/plugin_base.dart';
 import 'hooks_manager.dart';
 import 'module_manager.dart';
 

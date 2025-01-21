@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../core/navigation_manager.dart';
+import '../managers/navigation_manager.dart';
 
 class CustomDrawer extends StatelessWidget {
   @override
