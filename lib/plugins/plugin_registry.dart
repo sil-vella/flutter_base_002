@@ -1,8 +1,8 @@
 import 'package:flush_me_im_famous/core/managers/state_manager.dart';
 import 'package:flush_me_im_famous/plugins/main_plugin/main_plugin_main.dart';
-import '../../tools/logging/logger.dart';
-import '../managers/plugin_manager.dart';
-import '../managers/navigation_manager.dart';
+import '../tools/logging/logger.dart';
+import '../core/managers/plugin_manager.dart';
+import '../core/managers/navigation_manager.dart';
 
 class PluginRegistry {
   static final Map<String, dynamic> _pluginInstances = {};

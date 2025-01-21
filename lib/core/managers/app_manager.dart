@@ -1,6 +1,6 @@
 import 'package:flush_me_im_famous/core/managers/plugin_manager.dart';
 import 'package:flutter/material.dart';
-import '../services/plugin_registry.dart';
+import '../../plugins/plugin_registry.dart';
 import '../services/shared_preferences.dart';
 import 'hooks_manager.dart';
 import 'module_manager.dart';
