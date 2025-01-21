@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'core/app_manager.dart';
 import 'core/hooks_manager.dart';
 import 'core/navigation_manager.dart';
+import 'core/state_manager.dart';
 
 void main() {
   final navigationContainer = NavigationContainer();
@@ -17,6 +18,7 @@ void main() {
       providers: [
         ChangeNotifierProvider(create: (_) => AppManager(navigationContainer, hooksManager)),
         ChangeNotifierProvider.value(value: navigationContainer),
+        ChangeNotifierProvider(create: (_) => StateManager()), // Add StateManager here
       ],
       child: MyApp(),
     ),
