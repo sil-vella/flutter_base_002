@@ -14,39 +14,26 @@ class AppManager extends ChangeNotifier {
   final PluginManager pluginManager;
   final ModuleManager moduleManager;
   final HooksManager hooksManager;
-  final ServicesManager servicesManager; // Add ServicesManager
+  final ServicesManager servicesManager;
 
   bool _isInitialized = false;
   bool get isInitialized => _isInitialized;
 
-  // Factory to always return the singleton instance
-  factory AppManager(NavigationContainer navigationContainer, HooksManager hooksManager) {
+  factory AppManager() {
     if (!_instance._isInitialized) {
       _instance._initializePlugins();
     }
     return _instance;
   }
 
-  // Internal constructor for singleton
   AppManager._internal()
       : navigationContainer = NavigationContainer(),
         hooksManager = HooksManager(),
         pluginManager = PluginManager(HooksManager()),
         moduleManager = ModuleManager(),
-        servicesManager = ServicesManager(); // Initialize ServicesManager
-
-  /// Initializes app-wide services
-  /// Initializes app-wide services
-  Future<void> _initializeServices() async {
-    // Fetch all self-registered services and initialize them
-    final registeredServices = servicesManager.getAllServices();
-    for (var service in registeredServices.values) {
-      await service.initialize();
-    }
-
-    debugPrint('App services initialized successfully.');
+        servicesManager = ServicesManager() {
+    servicesManager.autoRegisterAllServices(); // Automatically register and initialize all services
   }
-
 
   /// Trigger hooks dynamically
   void triggerHook(String hookName) {
@@ -55,7 +42,6 @@ class AppManager extends ChangeNotifier {
 
   /// Initializes plugins and services
   Future<void> _initializePlugins() async {
-    await _initializeServices(); // Initialize services first
 
     final plugins = PluginRegistry.getPlugins(pluginManager, navigationContainer);
     for (var entry in plugins.entries) {

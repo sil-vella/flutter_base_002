@@ -1,30 +1,39 @@
 import '../../tools/logging/logger.dart';
 import '../00_base/service_base.dart';
+import '../services/shared_preferences.dart'; // Import your services here
 
 class ServicesManager {
-  // Singleton instance
   static final ServicesManager _instance = ServicesManager._internal();
 
-  // Factory constructor to return the singleton instance
   factory ServicesManager() => _instance;
 
-  // Internal constructor for singleton
   ServicesManager._internal();
 
-  // Service storage
   final Map<String, ServicesBase> _services = {};
 
-  /// Get all registered services
-  Map<String, ServicesBase> getAllServices() => _services;
+  /// List of all services with keys
+  static final List<MapEntry<String, ServicesBase>> _allServices = [
+    MapEntry('shared_pref', SharedPrefManager()), // Add your services with keys
+    // MapEntry('another_service', AnotherService()),
+  ];
 
-  /// Register a service
-  void registerService(String serviceKey, ServicesBase service) {
-    if (_services.containsKey(serviceKey)) {
-      throw Exception('Service with key "$serviceKey" is already registered.');
+  /// Automatically register and initialize all services
+  void autoRegisterAllServices() {
+    for (var entry in _allServices) {
+      final serviceKey = entry.key;
+      final service = entry.value;
+      if (!_services.containsKey(serviceKey)) {
+        _services[serviceKey] = service;
+        service.initialize();
+        Logger().info('Service registered and initialized: $serviceKey');
+      }
     }
-    _services[serviceKey] = service;
-    service.initialize();
-    Logger().info('Service registered: $serviceKey');
+  }
+
+  /// Fetch a service by key
+  T? getService<T extends ServicesBase>(String serviceKey) {
+    Logger().info('Fetching service: $serviceKey');
+    return _services[serviceKey] as T?;
   }
 
   /// Check if a service is already registered
@@ -39,21 +48,6 @@ class ServicesManager {
       service.dispose();
       Logger().info('Service deregistered and disposed: $serviceKey');
     }
-  }
-
-  /// Get a service
-  T? getService<T extends ServicesBase>(String serviceKey) {
-    Logger().info('Fetching service: $serviceKey');
-    return _services[serviceKey] as T?;
-  }
-
-  /// Call a service method dynamically
-  dynamic callServiceMethod(String serviceKey, String methodName, [dynamic args = const [], Map<String, dynamic>? namedArgs]) {
-    final service = _services[serviceKey];
-    if (service == null) {
-      throw Exception('Service with key "$serviceKey" not found.');
-    }
-    return service.callServiceMethod(methodName, args, namedArgs);
   }
 
   /// Dispose all services

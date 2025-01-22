@@ -4,26 +4,12 @@ import '../00_base/service_base.dart';
 import '../managers/services_manager.dart'; // Import ServicesManager
 
 class SharedPrefManager extends ServicesBase {
-  // Singleton setup
-  SharedPrefManager._internal();
-
   static final SharedPrefManager _instance = SharedPrefManager._internal();
   SharedPreferences? _prefs;
 
-  // Public factory for accessing the singleton instance
-  factory SharedPrefManager() {
-    _instance._registerWithManager(); // Register with ServicesManager
-    return _instance;
-  }
+  SharedPrefManager._internal();
 
-  /// Register the service with ServicesManager
-  void _registerWithManager() {
-    final servicesManager = ServicesManager();
-    if (!servicesManager.isServiceRegistered('shared_pref')) {
-      servicesManager.registerService('shared_pref', this);
-      Logger().info('SharedPrefManager registered with ServicesManager.');
-    }
-  }
+  factory SharedPrefManager() => _instance;
 
   @override
   Future<void> initialize() async {
@@ -43,6 +29,11 @@ class SharedPrefManager extends ServicesBase {
 
     registerServiceMethod('remove', remove);
     registerServiceMethod('clear', clear);
+  }
+
+  // Override to provide the service instance
+  static List<ServicesBase> getAllServices() {
+    return [_instance];
   }
 
   // ------ Setter Methods ------

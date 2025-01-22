@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../core/00_base/screen_base.dart';
 import '../../../core/managers/state_manager.dart';
 import '../../../core/managers/module_manager.dart';
+import '../../../core/managers/app_manager.dart';
 
 class HomeScreen extends BaseScreen {
   const HomeScreen({Key? key}) : super(key: key);
@@ -21,6 +22,7 @@ class HomeScreenState extends BaseScreenState<HomeScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   String? _testData;
+  final TextEditingController _usernameController = TextEditingController();
 
   @override
   void initState() {
@@ -35,6 +37,7 @@ class HomeScreenState extends BaseScreenState<HomeScreen>
   @override
   void dispose() {
     _controller.dispose();
+    _usernameController.dispose();
     super.dispose();
   }
 
@@ -65,9 +68,19 @@ class HomeScreenState extends BaseScreenState<HomeScreen>
     }
   }
 
+  Future<void> _saveUsername(String username) async {
+    final appManager = AppManager();
+    final sharedPref = appManager.servicesManager.getService('shared_pref');
+    if (sharedPref != null) {
+      await sharedPref.callServiceMethod('setString', ['username', username]);
+      debugPrint('Username saved: $username');
+    } else {
+      debugPrint('SharedPrefManager not available.');
+    }
+  }
+
   @override
   Widget buildContent(BuildContext context) {
-
     // Retrieve AnimationsModule using ModuleManager
     final animationsModule = ModuleManager().getModule('animations_module');
 
@@ -95,6 +108,33 @@ class HomeScreenState extends BaseScreenState<HomeScreen>
                 _testData ?? "Fetching test data from server...",
                 style: const TextStyle(fontSize: 16),
                 textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 20),
+
+              // Text field to input username
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: TextField(
+                  controller: _usernameController,
+                  decoration: const InputDecoration(
+                    labelText: 'Enter Username',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+
+              // Button to save username
+              ElevatedButton(
+                onPressed: () {
+                  final username = _usernameController.text;
+                  if (username.isNotEmpty) {
+                    _saveUsername(username);
+                  } else {
+                    debugPrint('Username cannot be empty.');
+                  }
+                },
+                child: const Text('Save Username'),
               ),
               const SizedBox(height: 20),
 
@@ -131,3 +171,4 @@ class HomeScreenState extends BaseScreenState<HomeScreen>
     );
   }
 }
+

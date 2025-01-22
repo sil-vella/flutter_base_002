@@ -1,28 +1,28 @@
+import 'package:flush_me_im_famous/core/managers/services_manager.dart';
 import 'package:flush_me_im_famous/plugins/main_plugin/screens/home_screen.dart';
 import 'package:flush_me_im_famous/utils/consts/theme_consts.dart';
 import 'package:flush_me_im_famous/utils/consts/config.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'core/managers/app_manager.dart';
-import 'core/managers/hooks_manager.dart';
-import 'core/managers/navigation_manager.dart';
 import 'core/managers/state_manager.dart';
 
-void main() {
-  final navigationContainer = NavigationContainer();
-  final hooksManager = HooksManager();
+Future<void> main() async {
+  await WidgetsFlutterBinding.ensureInitialized();
+  final appManager = AppManager(); // Instantiate AppManager to access navigationContainer
 
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => AppManager(navigationContainer, hooksManager)),
+        ChangeNotifierProvider(create: (_) => appManager),
         ChangeNotifierProvider(create: (_) => StateManager()),
-        ChangeNotifierProvider.value(value: navigationContainer),
+        ChangeNotifierProvider.value(value: appManager.navigationContainer), // Provide NavigationContainer
       ],
       child: MyApp(),
     ),
   );
 }
+
 
 
 class MyApp extends StatefulWidget {
